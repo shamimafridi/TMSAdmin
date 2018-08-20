@@ -1,0 +1,10 @@
+<nb-card>
+  <nb-card-header>
+    Journal Vouchers
+  </nb-card-header>
+
+  <nb-card-body>
+    <at-grid (onSortingColumnClick)="columnSortedClicked($event)" (onPageChanged)="onPageChange($event)"  [gridOptions]= atGridOptions > </at-grid>
+
+  </nb-card-body>
+</nb-card>
