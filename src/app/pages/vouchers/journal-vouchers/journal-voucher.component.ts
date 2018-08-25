@@ -1,60 +1,93 @@
-import { AtGridOptions,AtGridColumn } from './../../../at-components/ATGrid/at-grid/at-grid-options';
-import { UserService } from './UserService';
-import { IUserListResponse } from './modal';
-import { Component, OnInit } from '@angular/core';
+import { UserService } from "./UserService";
+import { IUserListResponse } from "./modal";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { AgGridNg2 } from "ag-grid-angular";
+import { IGetRowsParams } from "ag-grid";
+import { Observable } from "rxjs";
+import { ServerDataSource } from "ng2-smart-table";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: 'at-journal-vouchers',
-  templateUrl: './journal-voucher.component.html',
- // styleUrls: ['./atgrid-example.component.scss'],
-  providers: [AtGridOptions]
+  selector: "at-journal-vouchers",
+  templateUrl: "./journal-voucher.component.html",
+  styleUrls: ["./journal-voucher.component.css"]
 })
-
-export class JournalVouchersComponent {
-  atGridOptions: AtGridOptions;
-  atGridColumns: AtGridColumn[];
-  constructor(private userService: UserService) {
-
-    this.atGridOptions = new AtGridOptions();
-    this.atGridOptions.pageCount = 1;
-    this.atGridOptions.pageLimit = 5;
-    this.atGridOptions.pageOffset = 0;
-    this.atGridColumns = [
-      new AtGridColumn('branch.name', null, true, "Branch"),
-      new AtGridColumn('desc', null, true, "Description"),
-      //new AtGridColumn('Cother'),
-      //new AtGridColumn('Qualification')
-    ];
-    this.getUserList(0, this.atGridOptions.pageLimit);
-
-    this.atGridOptions.columns = this.atGridColumns;
-
-  }
-  onPageChange(pageNo) {
-    this.getUserList(pageNo, this.atGridOptions.pageLimit);
-  }
-  public getUserList(pageNo: number, limit: number): void {
-    this.userService.getUserList(limit, pageNo)
-      .subscribe((data) => {
-        console.log(data)
-        if (data) {
-          debugger
-          // this.atGridOptions.dataSource = data.page_count.docs;
-          // this.atGridOptions.pageCount = data.page_count.total;
-          // this.atGridOptions.pageOffset = data.page_count.offset;
-
-          this.atGridOptions.dataSource =data as any[];
-          // this.atGridOptions.pageCount = data.page_count.total;
-          // this.atGridOptions.pageOffset = data.page_count.offset;
-
-        } else {
-
+export class JournalVouchersComponent implements OnInit {
+  ngOnInit(): void {}
+  settings = {
+    // pager: {
+    //   display: true,
+    //   perPage: 10
+    // },
+    actions: {
+      columnTitle: "Filter",
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [],
+      position: "left" // left|right
+    },
+    add: {
+      addButtonContent: '<i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>'
+    },
+    edit: {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>'
+    },
+    delete: {
+      deleteButtonContent: '<i class="nb-trash"></i>',
+      confirmDelete: true
+    },
+    columns: {
+      ["branch.name"]: {
+        title: "Branch"
+      },
+      _id: {
+        title: "ID"
+      },
+      desc: {
+        title: "Description"
+      },
+      date: {
+        title: "Description",
+        filter: {
+          type: "date",
+          config: {
+            selectText: "Select...",
+            list: [
+              { value: "Glenna Reichert", title: "Glenna Reichert" },
+              { value: "Kurtis Weissnat", title: "Kurtis Weissnat" },
+              { value: "Chelsey Dietrich", title: "Chelsey Dietrich" }
+            ]
+          }
         }
-      });
+      }
+    }
+  };
 
+  source: ServerDataSource;
+
+  constructor(private userService: UserService, http: HttpClient) {
+    this.source = new ServerDataSource(http, {
+      endPoint: "http://localhost:3000/api/voucher",
+      pagerLimitKey: "limit",
+      pagerPageKey: "page",
+      sortDirKey: "order",
+      sortFieldKey: "sort",
+      dataKey: "docs",
+      totalKey: "total"
+    });
+    this.source.setPaging(1, 10);
   }
-  columnSortedClicked(arg) {
 
-    console.log(arg);
+  onDeleteConfirm(event): void {
+    if (window.confirm("Are you sure you want to delete?")) {
+      event.confirm.resolve();
+    } else {
+      event.confirm.reject();
+    }
   }
 }

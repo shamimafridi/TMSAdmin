@@ -27,10 +27,7 @@ export class UserService {
 
   // }
   public constructor(private http: HttpClient) {}
-  public getUserList(
-    limit: number,
-    pageNo: number
-  ) {
+  public getUserList(limit: number, pageNo: number) {
     const headers = new Headers({ "Content-Type": "application/json" });
     headers.append(
       "x-access-token",
@@ -45,7 +42,7 @@ export class UserService {
     //     //  Authorization: "my-auth-token"
     //   })
     // };
-    const url = `${Config.ServiceUrl}/voucher`;//?limit=${limit}&offset=${pageNo}`;
-    return this.http.get(url);
+    const url = `${Config.ServiceUrl}/voucher`; //?limit=${limit}&offset=${pageNo}`;
+    return this.http.get<any[]>(url);
   }
 }

@@ -1,10 +1,10 @@
 <nb-card>
   <nb-card-header>
-    Journal Vouchers
+    Journal Voucher
   </nb-card-header>
 
   <nb-card-body>
-    <at-grid (onSortingColumnClick)="columnSortedClicked($event)" (onPageChanged)="onPageChange($event)"  [gridOptions]= atGridOptions > </at-grid>
-
+    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)">
+    </ng2-smart-table>
   </nb-card-body>
 </nb-card>

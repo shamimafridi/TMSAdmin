@@ -1,7 +1,9 @@
 export interface IUserListResponse {
-    page_count: 
-            { docs: any[],
-            total:number,
-            offset:number 
-            };
+  desc: string;
+  branch: { name: string };
+  page_count: {
+    docs: any[];
+    total: number;
+    offset: number;
+  };
 }
