@@ -1,8 +1,6 @@
 import { UserService } from "./UserService";
 import { IUserListResponse } from "./modal";
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { AgGridNg2 } from "ag-grid-angular";
-import { IGetRowsParams } from "ag-grid";
 import { Observable } from "rxjs";
 import { ServerDataSource } from "ng2-smart-table";
 import { HttpClient } from "@angular/common/http";

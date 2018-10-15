@@ -53,12 +53,11 @@ export const NB_CORE_PROVIDERS = [
         baseEndpoint: Config.ServiceUrl,
         login: {
           endpoint: "/login",
-         // alwaysFail: true,
+          // alwaysFail: true,
           redirect: {
-            success: "pages",
+            success: "pages"
             //failure: null
-          },
-          
+          }
         },
 
         register: {

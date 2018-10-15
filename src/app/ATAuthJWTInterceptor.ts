@@ -12,7 +12,6 @@ export class ATAuthJWTInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     return this.authService.getToken()
       .pipe(
         switchMap((token: NbAuthJWTToken) => {
@@ -21,7 +20,7 @@ export class ATAuthJWTInterceptor implements HttpInterceptor {
             req = req.clone({
               setHeaders: {
                 Authorization: JWT,
-                SubDomain:'zarwali'
+                SubDomain:'papsico'
               },
             });
           }

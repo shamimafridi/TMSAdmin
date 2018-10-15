@@ -1,6 +1,5 @@
 import { ExtraOptions, RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
-import { AuthGuard } from "./AuthGuard";
 import {
   NbAuthComponent,
   NbLoginComponent,
@@ -9,6 +8,7 @@ import {
   NbRequestPasswordComponent,
   NbResetPasswordComponent
 } from "@nebular/auth";
+import { AuthGuard } from "./AuthGuard";
 
 const routes: Routes = [
   {
@@ -46,7 +46,7 @@ const routes: Routes = [
       }
     ]
   },
-  { path: "", redirectTo: "auth", pathMatch: "full" },
+  { path: "", redirectTo: "pages", pathMatch: "full" },
   { path: "**", redirectTo: "pages" }
 ];
 

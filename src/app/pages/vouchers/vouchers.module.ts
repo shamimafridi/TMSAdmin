@@ -9,7 +9,6 @@ import {
 } from "./vouchers-routing.module";
 import { UserService } from "./journal-vouchers/UserService";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { TieredMenuModule } from "primeng/tieredmenu";
 // import { SmartTableService } from '../../@core/data/smart-table.service';
 
 @NgModule({
@@ -19,8 +18,7 @@ import { TieredMenuModule } from "primeng/tieredmenu";
     Ng2SmartTableModule,
     HttpClientModule,
     // HttpClientModule,
-    VouchersRoutingModule,
-    TieredMenuModule
+    VouchersRoutingModule
     // Ng2SmartTableModule,
   ],
   declarations: [...routedComponents],
