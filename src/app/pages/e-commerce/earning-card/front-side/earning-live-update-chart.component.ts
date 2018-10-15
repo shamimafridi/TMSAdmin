@@ -1,32 +1,41 @@
-import { delay, takeWhile } from 'rxjs/operators';
-import { AfterViewInit, Component, Input, OnChanges, OnDestroy } from '@angular/core';
-import { NbThemeService } from '@nebular/theme';
-import { LayoutService } from '../../../../@core/data/layout.service';
+import { delay, takeWhile } from "rxjs/operators";
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy
+} from "@angular/core";
+import { NbThemeService } from "@nebular/theme";
+import { LayoutService } from "../../../../@core/data/layout.service";
 
 @Component({
-  selector: 'ngx-earning-live-update-chart',
-  styleUrls: ['earning-card-front.component.scss'],
+  selector: "ngx-earning-live-update-chart",
+  styleUrls: ["earning-card-front.component.scss"],
   template: `
     <div echarts
          class="echart"
          [options]="option"
          (chartInit)="onChartInit($event)"></div>
-  `,
+  `
 })
-export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class EarningLiveUpdateChartComponent
+  implements AfterViewInit, OnDestroy, OnChanges {
   private alive = true;
 
-  @Input() liveUpdateChartData: { value: [string, number] }[];
+  @Input()
+  liveUpdateChartData: { value: [string, number] }[];
 
   option: any;
   echartsInstance;
 
-  constructor(private theme: NbThemeService,
-              private layoutService: LayoutService) {
-    this.layoutService.onChangeLayoutSize()
-      .pipe(
-        takeWhile(() => this.alive),
-      )
+  constructor(
+    private theme: NbThemeService,
+    private layoutService: LayoutService
+  ) {
+    this.layoutService
+      .onChangeLayoutSize()
+      .pipe(takeWhile(() => this.alive))
       .subscribe(() => this.resizeChart());
   }
 
@@ -37,10 +46,11 @@ export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit() {
-    this.theme.getJsTheme()
+    this.theme
+      .getJsTheme()
       .pipe(
         delay(1),
-        takeWhile(() => this.alive),
+        takeWhile(() => this.alive)
       )
       .subscribe(config => {
         const earningLineTheme: any = config.variables.earningLine;
@@ -55,97 +65,104 @@ export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy
         left: 0,
         top: 0,
         right: 0,
-        bottom: 0,
+        bottom: 0
       },
       xAxis: {
-        type: 'time',
+        type: "time",
         axisLine: {
-          show: false,
+          show: false
         },
         axisLabel: {
-          show: false,
+          show: false
         },
         axisTick: {
-          show: false,
+          show: false
         },
         splitLine: {
-          show: false,
-        },
+          show: false
+        }
       },
       yAxis: {
-        boundaryGap: [0, '5%'],
+        boundaryGap: [0, "5%"],
         axisLine: {
-          show: false,
+          show: false
         },
         axisLabel: {
-          show: false,
+          show: false
         },
         axisTick: {
-          show: false,
+          show: false
         },
         splitLine: {
-          show: false,
-        },
+          show: false
+        }
       },
       tooltip: {
         axisPointer: {
-          type: 'shadow',
+          type: "shadow"
         },
         textStyle: {
           color: earningLineTheme.tooltipTextColor,
           fontWeight: earningLineTheme.tooltipFontWeight,
-          fontSize: earningLineTheme.tooltipFontSize,
+          fontSize: earningLineTheme.tooltipFontSize
         },
-        position: 'top',
+        position: "top",
         backgroundColor: earningLineTheme.tooltipBg,
         borderColor: earningLineTheme.tooltipBorderColor,
         borderWidth: earningLineTheme.tooltipBorderWidth,
         formatter: params => `$ ${Math.round(parseInt(params.value[1], 10))}`,
-        extraCssText: earningLineTheme.tooltipExtraCss,
+        extraCssText: earningLineTheme.tooltipExtraCss
       },
       series: [
         {
-          type: 'line',
-          symbol: 'circle',
-          sampling: 'average',
+          type: "line",
+          symbol: "circle",
+          sampling: "average",
           itemStyle: {
             normal: {
-              opacity: 0,
+              opacity: 0
             },
             emphasis: {
-              opacity: 0,
-            },
+              opacity: 0
+            }
           },
           lineStyle: {
             normal: {
-              width: 0,
-            },
+              width: 0
+            }
           },
           areaStyle: {
             normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: earningLineTheme.gradFrom,
-              }, {
-                offset: 1,
-                color: earningLineTheme.gradTo,
-              }]),
-              opacity: 1,
-            },
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: earningLineTheme.gradFrom
+                },
+                {
+                  offset: 1,
+                  color: earningLineTheme.gradTo
+                }
+              ]),
+              opacity: 1
+            }
           },
-          data: this.liveUpdateChartData,
-        },
+          data: this.liveUpdateChartData
+        }
       ],
-      animation: true,
+      animation: true
     };
   }
 
   updateChartOptions(chartData: { value: [string, number] }[]) {
-    this.echartsInstance.setOption({
-      series: [{
-        data: chartData,
-      }],
-    });
+    if (this.echartsInstance) {
+      this.echartsInstance.setOption({
+        series: [
+          {
+            data: chartData
+          }
+        ]
+      });
+    }
   }
 
   onChartInit(ec) {

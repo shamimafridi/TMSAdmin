@@ -1,45 +1,53 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { NbAuthService, NbAuthToken } from "@nebular/auth";
+import { Component, Input, OnInit } from "@angular/core";
 
-import { NbMenuService, NbSidebarService } from '@nebular/theme';
-import { UserService } from '../../../@core/data/users.service';
-import { AnalyticsService } from '../../../@core/utils/analytics.service';
-import { LayoutService } from '../../../@core/data/layout.service';
+import { NbMenuService, NbSidebarService } from "@nebular/theme";
+import { UserService } from "../../../@core/data/users.service";
+import { AnalyticsService } from "../../../@core/utils/analytics.service";
 
 @Component({
-  selector: 'ngx-header',
-  styleUrls: ['./header.component.scss'],
-  templateUrl: './header.component.html',
+  selector: "ngx-header",
+  styleUrls: ["./header.component.scss"],
+  templateUrl: "./header.component.html"
 })
 export class HeaderComponent implements OnInit {
-
-  @Input() position = 'normal';
+  @Input()
+  position = "normal";
 
   user: any;
 
-  userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
+  userMenu = [{ title: "Profile" }, { title: "Log out" }];
 
-  constructor(private sidebarService: NbSidebarService,
-              private menuService: NbMenuService,
-              private userService: UserService,
-              private analyticsService: AnalyticsService,
-              private layoutService: LayoutService) {
-  }
+  constructor(
+    private sidebarService: NbSidebarService,
+    private menuService: NbMenuService,
+    private userService: UserService,
+    private analyticsService: AnalyticsService,
+    private authService: NbAuthService
+  ) {}
 
   ngOnInit() {
-    this.userService.getUsers()
-      .subscribe((users: any) => this.user = users.nick);
+    this.userService.getUsers().subscribe((users: any) => {
+      this.authService.onTokenChange().subscribe((token: NbAuthToken) => {
+        debugger
+        if (token.isValid()) {
+          let userToken = token.getPayload();
+          // this.user = { name: "Nick Jones", picture: "assets/images/nick.png" };
+          this.user = userToken; // here we receive a payload from the token and assigne it to our `user` variable
+          this.user.picture = "assets/images/nick.png";
+         localStorage.setItem("userInfo", JSON.stringify(this.user));
+        }
+      });
+    });
   }
 
   toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
-    this.layoutService.changeLayoutSize();
-
+    this.sidebarService.toggle(true, "menu-sidebar");
     return false;
   }
 
   toggleSettings(): boolean {
-    this.sidebarService.toggle(false, 'settings-sidebar');
-
+    this.sidebarService.toggle(false, "settings-sidebar");
     return false;
   }
 
@@ -48,6 +56,9 @@ export class HeaderComponent implements OnInit {
   }
 
   startSearch() {
-    this.analyticsService.trackEvent('startSearch');
+    this.analyticsService.trackEvent("startSearch");
   }
+}
+interface IUserToken {
+  username: String;
 }
