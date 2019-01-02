@@ -4,6 +4,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { NbMenuService, NbSidebarService } from "@nebular/theme";
 import { UserService } from "../../../@core/data/users.service";
 import { AnalyticsService } from "../../../@core/utils/analytics.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "ngx-header",
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit {
   userMenu = [{ title: "Profile" }, { title: "Log out" }];
 
   constructor(
+    private router: Router,
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private userService: UserService,
@@ -29,13 +31,12 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.userService.getUsers().subscribe((users: any) => {
       this.authService.onTokenChange().subscribe((token: NbAuthToken) => {
-        debugger
         if (token.isValid()) {
           let userToken = token.getPayload();
-          // this.user = { name: "Nick Jones", picture: "assets/images/nick.png" };
           this.user = userToken; // here we receive a payload from the token and assigne it to our `user` variable
-          this.user.picture = "assets/images/nick.png";
-         localStorage.setItem("userInfo", JSON.stringify(this.user));
+          localStorage.setItem("userInfo", JSON.stringify(this.user));
+        }else{
+         this.router.navigate(['/auth/login']);
         }
       });
     });
